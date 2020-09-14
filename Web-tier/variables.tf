@@ -1,13 +1,13 @@
 variable "vpc_cidr" {
   description = "CIDR for VPC"
   type        = string
-  default = "20.0.0.0/16"
+  default = "10.0.0.0/16"
 }
 
 variable "public_subnet_1_cidr" {
   description = "CIDR for Public Subnet 1"
   type        = string
-  default = "20.0.10.0/24"
+  default = "10.0.10.0/24"
 }
 
 variable "public_subnet_1_availability_zone" {
@@ -19,7 +19,7 @@ variable "public_subnet_1_availability_zone" {
 variable "public_subnet_2_cidr" {
   description = "CIDR for Public Subnet 2"
   type        = string
-  default = "20.0.20.0/24"
+  default = "10.0.20.0/24"
 }
 
 variable "public_subnet_2_availability_zone" {
@@ -32,7 +32,7 @@ variable "public_subnet_2_availability_zone" {
 variable "private_subnet_1_cidr" {
   description = "CIDR for Private Subnet 1"
   type        = string
-  default = "20.0.30.0/24"
+  default = "10.0.30.0/24"
 }
 
 variable "private_subnet_1_availability_zone" {
@@ -44,7 +44,7 @@ variable "private_subnet_1_availability_zone" {
 variable "private_subnet_2_cidr" {
   description = "CIDR for private Subnet 2"
   type        = string
-  default = "20.0.40.0/24"
+  default = "10.0.40.0/24"
 }
 
 variable "private_subnet_2_availability_zone" {
@@ -56,7 +56,7 @@ variable "private_subnet_2_availability_zone" {
 variable "private_subnet_3_cidr" {
   description = "CIDR for private Subnet 3"
   type        = string
-  default = "20.0.50.0/24"
+  default = "10.0.50.0/24"
 }
 
 variable "private_subnet_3_availability_zone" {
@@ -68,7 +68,7 @@ variable "private_subnet_3_availability_zone" {
 variable "private_subnet_4_cidr" {
   description = "CIDR for private Subnet 4"
   type        = string
-  default = "20.0.60.0/24"
+  default = "10.0.60.0/24"
 }
 
 variable "private_subnet_4_availability_zone" {
@@ -116,5 +116,5 @@ variable "asg_desired" {
 variable "alarm-notification" {
   description = "Phone number to send http-400-error sms notofocation"
   type     = string
-  default = "+14077244397"
+  default = "+"
 }
