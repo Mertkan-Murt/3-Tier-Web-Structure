@@ -288,7 +288,7 @@ resource "aws_network_acl" "App-ACL" {
         protocol   = "tcp"
         rule_no    = 100
         action     = "allow"
-        cidr_block = "0.0.0.0/0"
+        cidr_block = var.vpc_cidr
         from_port  = 80
         to_port    = 80
     }
@@ -296,7 +296,7 @@ resource "aws_network_acl" "App-ACL" {
         protocol   = "tcp"
         rule_no    = 200
         action     = "allow"
-        cidr_block = "0.0.0.0/0"
+        cidr_block = var.vpc_cidr
         from_port  = 22
         to_port    = 22
     }
@@ -304,7 +304,7 @@ resource "aws_network_acl" "App-ACL" {
         protocol   = "tcp"
         rule_no    = 300
         action     = "allow"
-        cidr_block = "0.0.0.0/0"
+        cidr_block = var.vpc_cidr
         from_port  = 32768
         to_port    = 65353
     }
@@ -312,7 +312,7 @@ resource "aws_network_acl" "App-ACL" {
         protocol   = "tcp"
         rule_no    = 400
         action     = "allow"
-        cidr_block = "0.0.0.0/0"
+        cidr_block = var.vpc_cidr
         from_port  = 443
         to_port    = 443
     }
