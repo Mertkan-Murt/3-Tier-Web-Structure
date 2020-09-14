@@ -92,7 +92,7 @@ variable "instance_image_id" {
 variable "instance_private_key" {
   description = "Instance private key"
   type        = string
-  default = "CalifirniaKey"
+  default = ""
 }
 
 variable "asg_min" {
