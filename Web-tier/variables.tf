@@ -116,7 +116,7 @@ variable "instance_image_id" {
 variable "instance_private_key" {
   description = "Instance private key"
   type        = string
-  default = "CalifirniaKey"
+  default = "+"
 }
 
 variable "asg_min" {
@@ -140,17 +140,17 @@ variable "asg_desired" {
 variable "alarm-notification" {
   description = "Phone number to send http-400-error sms notofocation"
   type     = string
-  default = "+14077244397"
+  default = "+"
 }
 
 variable "zone_id" {
   description = "zone id for r53"
   type = string 
-  default = "Z0173272158NI8G02VBL1"
+  default = "+"
 }
 
 variable "route53_dns" {
   description = "dns name for route 53"
   type = string
-  default = "myawsdomain.org"
+  default = "yourdomain-name"
 }
