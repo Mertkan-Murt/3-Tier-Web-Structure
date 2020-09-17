@@ -221,14 +221,6 @@ resource "aws_network_acl" "Web-ACL" {
     vpc_id = aws_vpc.Project-VPC.id
     subnet_ids = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id, aws_subnet.private-subnet-1.id, aws_subnet.private-subnet-2.id]
     ingress {
-        protocol   = "-1"
-        rule_no    = 50
-        action     = "allow"
-        cidr_block = "0.0.0.0/0"
-        from_port  = 0
-        to_port    = 0
-    }
-    ingress {
         protocol   = "tcp"
         rule_no    = 100
         action     = "allow"
@@ -270,62 +262,6 @@ resource "aws_network_acl" "Web-ACL" {
     }
     tags = {
         Name = "Web-ACL"
-  }
-}
-
-resource "aws_network_acl" "App-ACL" {
-    vpc_id = aws_vpc.Project-VPC.id
-    subnet_ids = [aws_subnet.private-subnet-3.id, aws_subnet.private-subnet-4.id]
-    ingress {
-        protocol   = "-1"
-        rule_no    = 50
-        action     = "allow"
-        cidr_block = "0.0.0.0/0"
-        from_port  = 0
-        to_port    = 0
-    }
-    ingress {
-        protocol   = "tcp"
-        rule_no    = 100
-        action     = "allow"
-        cidr_block = var.vpc_cidr
-        from_port  = 80
-        to_port    = 80
-    }
-     ingress {
-        protocol   = "tcp"
-        rule_no    = 200
-        action     = "allow"
-        cidr_block = var.vpc_cidr
-        from_port  = 22
-        to_port    = 22
-    }
-    ingress {
-        protocol   = "tcp"
-        rule_no    = 300
-        action     = "allow"
-        cidr_block = var.vpc_cidr
-        from_port  = 32768
-        to_port    = 65353
-    }
-    ingress {
-        protocol   = "tcp"
-        rule_no    = 400
-        action     = "allow"
-        cidr_block = var.vpc_cidr
-        from_port  = 443
-        to_port    = 443
-    }
-    egress {
-        protocol   = "-1"
-        rule_no    = 100
-        action     = "allow"
-        cidr_block = "0.0.0.0/0"
-        from_port  = 0
-        to_port    = 0
-    }
-    tags = {
-        Name = "App-ACL"
   }
 }
 
@@ -382,12 +318,12 @@ resource "aws_lb" "web-alb" {
     subnets = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id ]
     ip_address_type = "ipv4"
     tags = {
-        Name = "Project-ALB"
+        Name = "Web-Project-ALB"
     }
 }
 
 resource "aws_lb_target_group" "web-project-tg" {
-    name = "Wewb-Project-target-group"
+    name = "Web-Project-target-group"
     port = 80
     protocol = "HTTP"
     target_type = "instance"
@@ -472,21 +408,22 @@ resource "aws_instance" "Project-Web-tier-1" {
     subnet_id = aws_subnet.private-subnet-1.id
     user_data = <<-EOF
             #!/bin/bash
-            sudo yum update -y
-            sudo yum install httpd php php-mysql -y
-            sudi cd /var/www/html
-            sudo echo "healthy" > healthy.html
-            sudo wget https://wordpress.org/wordpress-5.1.1.tar.gz
-            sudo tar -xzf wordpress-5.1.1.tar.gz
-            sudo cp -r wordpress/* /var/www/html/
-            sudo rm -rf wordpress
-            sudo rm -rf wordpress-5.1.1.tar.gz
-            sudo chmod -R 755 wp-content
-            sudo chown -R apache:apache wp-content
-            sudo wget https://s3.amazonaws.com/bucketforwordpresslab-donotdelete/htaccess.txt
-            sudo mv htaccess.txt .htaccess
-            sudo chkconfig httpd on
-            sudo service httpd start
+            sudo su
+            yum update -y
+            yum install httpd php php-mysql -y
+            cd /var/www/html
+            echo "healthy" > healthy.html
+            wget https://wordpress.org/wordpress-5.1.1.tar.gz
+            tar -xzf wordpress-5.1.1.tar.gz
+            cp -r wordpress/* /var/www/html/
+            rm -rf wordpress
+            rm -rf wordpress-5.1.1.tar.gz
+            chmod -R 755 wp-content
+            chown -R apache:apache wp-content
+            wget https://s3.amazonaws.com/bucketforwordpresslab-donotdelete/htaccess.txt
+            mv htaccess.txt .htaccess
+            chkconfig httpd on
+            systemctl start httpd
             EOF
     tags = {
         Name = "Web-Server-1"
@@ -501,21 +438,22 @@ resource "aws_instance" "Project-Web-tier-2" {
     subnet_id = aws_subnet.private-subnet-2.id
     user_data = <<-EOF
             #!/bin/bash
-            sudo yum update -y
-            sudo yum install httpd php php-mysql -y
-            sudi cd /var/www/html
-            sudo echo "healthy" > healthy.html
-            sudo wget https://wordpress.org/wordpress-5.1.1.tar.gz
-            sudo tar -xzf wordpress-5.1.1.tar.gz
-            sudo cp -r wordpress/* /var/www/html/
-            sudo rm -rf wordpress
-            sudo rm -rf wordpress-5.1.1.tar.gz
-            sudo chmod -R 755 wp-content
-            sudo chown -R apache:apache wp-content
-            sudo wget https://s3.amazonaws.com/bucketforwordpresslab-donotdelete/htaccess.txt
-            sudo mv htaccess.txt .htaccess
-            sudo chkconfig httpd on
-            sudo service httpd start
+            sudo su
+            yum update -y
+            yum install httpd php php-mysql -y
+            cd /var/www/html
+            echo "healthy" > healthy.html
+            wget https://wordpress.org/wordpress-5.1.1.tar.gz
+            tar -xzf wordpress-5.1.1.tar.gz
+            cp -r wordpress/* /var/www/html/
+            rm -rf wordpress
+            rm -rf wordpress-5.1.1.tar.gz
+            chmod -R 755 wp-content
+            chown -R apache:apache wp-content
+            wget https://s3.amazonaws.com/bucketforwordpresslab-donotdelete/htaccess.txt
+            mv htaccess.txt .htaccess
+            chkconfig httpd on
+            systemctl start httpd
             EOF
     tags = {
         Name = "Web-Server-2"
@@ -668,7 +606,7 @@ resource "aws_autoscaling_group" "App-asg" {
     health_check_type = "ELB"
     force_delete = true
     launch_template {
-        id = aws_launch_template.web_template.id
+        id = aws_launch_template.app_template.id
         version = "$Latest"
     }
     target_group_arns = [aws_lb_target_group.app-project-tg.arn] 
@@ -766,8 +704,111 @@ resource "aws_cloudwatch_metric_alarm" "http-400-alarm" {
     ok_actions                = [aws_sns_topic.httperror400.arn]
 }
 
-resource "aws_sns_topic_subscription" "http400-error" {
-    topic_arn = aws_sns_topic.httperror400.arn
-    protocol  = "sms"
-    endpoint  = var.alarm-notification
+resource "aws_route53_record" "www" {
+    zone_id = var.zone_id
+    name    = var.route53_dns 
+    type    = "A"
+    alias {
+        name = aws_lb.web-alb.dns_name
+        zone_id = aws_lb.web-alb.zone_id
+        evaluate_target_health = true
+    }
+}
+
+resource "aws_db_instance" "default" {
+ db_subnet_group_name = aws_db_subnet_group.gogreen_subnet_group.id
+  # DB instance size
+  allocated_storage    = 20
+  max_allocated_storage = 100
+  storage_type         = "gp2"
+  instance_class       = "db.t2.micro"
+  # Engine options
+  engine               = "mysql"
+  engine_version       = "5.7"
+  # DB instance identifier
+  identifier           = "database-project"
+  name                 = "ProjectDB"
+  username             = "admin"
+  password             = "password"
+  # Availity & durability
+  #multi_az             = "true"
+  #availability_zone    = "us-west-1b"
+  # Connectivity
+  port                 = "3306"
+  #vpc_security_group_ids = ["${aws_security_group.MySQL-DB-SG.id}"]
+  # Additional configuration
+  parameter_group_name = "default.mysql5.7"
+  storage_encrypted    = "false"
+  skip_final_snapshot  = "true"
+  publicly_accessible  = "false"
+  # DB deletion protection
+  deletion_protection  = "false"
+}  
+resource "aws_db_subnet_group"  "gogreen_subnet_group" {
+  name       = "gogreen_subnet_group"
+  subnet_ids = [aws_subnet.BD-subnet-1.id, aws_subnet.BD-subnet-2.id]
+  tags       = {
+    name = "gogreen_subnet_group"
+  }
+}
+
+resource "aws_subnet" "BD-subnet-1" { 
+    vpc_id = aws_vpc.Project-VPC.id
+    cidr_block = var.DB_subnet_1_cidr
+    availability_zone = var.DB_subnet_1_availability_zone
+    tags = {
+        Name = "DB Subnet 1"
+    }
+}
+
+resource "aws_subnet" "BD-subnet-2" { 
+    vpc_id = aws_vpc.Project-VPC.id
+    cidr_block = var.DB_subnet_2_cidr
+    availability_zone = var.DB_subnet_2_availability_zone
+    tags = {
+        Name = "DB Subnet 2"
+    }
+}
+
+resource "aws_route_table_association" "DB_rt_1" {
+    subnet_id = aws_subnet.BD-subnet-1.id
+    route_table_id = aws_route_table.private_rt.id
+}
+
+resource "aws_route_table_association" "DB_rt_2" {
+    subnet_id = aws_subnet.BD-subnet-2.id
+    route_table_id = aws_route_table.private_rt.id
+}
+
+resource "aws_security_group" "MySQL-DB-SG" {
+   name         = "MySQL-DB-SG"
+   description  = "3-Tier DB security group"
+    egress {
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    vpc_id = aws_vpc.Project-VPC.id
+    tags = {
+        Name = "MySQL DB SG"
+    }
+}
+resource "aws_security_group_rule" "DB-server-mysql-sg-rule" {
+    description              = "MySQL/Aurora"
+    type                     = "ingress"
+    from_port                = 3306
+    to_port                  = 3306
+    protocol                 = "tcp"
+    source_security_group_id = aws_security_group.app-http-ssh-sg.id
+    security_group_id        = aws_security_group.MySQL-DB-SG.id
+}
+resource "aws_security_group_rule" "DB-server-ssh-sg-rule" {
+    description              = "SSH"
+    type                     = "ingress"
+    from_port                = 22
+    to_port                  = 22
+    protocol                 = "tcp"
+    cidr_blocks              = [var.vpc_cidr]
+    security_group_id        = aws_security_group.MySQL-DB-SG.id
 }

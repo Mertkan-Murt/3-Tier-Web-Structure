@@ -77,6 +77,30 @@ variable "private_subnet_4_availability_zone" {
   default = "us-west-1b"
 }
 
+variable "DB_subnet_1_cidr" {
+  description = "CIDR for DB Subnet 1"
+  type        = string
+  default = "10.0.70.0/24"
+}
+
+variable "DB_subnet_1_availability_zone" {
+  description = "DB Subnet 1 availability Zone"
+  type        = string
+  default = "us-west-1a"
+}
+
+variable "DB_subnet_2_cidr" {
+  description = "CIDR for DB Subnet 2"
+  type        = string
+  default = "10.0.80.0/24"
+}
+
+variable "DB_subnet_2_availability_zone" {
+  description = "DB Subnet 2 availability Zone"
+  type        = string
+  default = "us-west-1b"
+}
+
 variable "instance_type" {
   description = "Instance type"
   type        = string
@@ -92,7 +116,7 @@ variable "instance_image_id" {
 variable "instance_private_key" {
   description = "Instance private key"
   type        = string
-  default = ""
+  default = "CalifirniaKey"
 }
 
 variable "asg_min" {
@@ -116,5 +140,17 @@ variable "asg_desired" {
 variable "alarm-notification" {
   description = "Phone number to send http-400-error sms notofocation"
   type     = string
-  default = "+"
+  default = "+14077244397"
+}
+
+variable "zone_id" {
+  description = "zone id for r53"
+  type = string 
+  default = "Z0173272158NI8G02VBL1"
+}
+
+variable "route53_dns" {
+  description = "dns name for route 53"
+  type = string
+  default = "myawsdomain.org"
 }
